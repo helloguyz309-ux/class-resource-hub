@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#185abc" />
+    <meta name="description" content="A GitHub-only class resource hub for files, links, prompts, images, videos, and comments." />
+    <title>Class Resource Hub</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <section id="setupScreen" class="auth-screen hidden">
+        <div class="auth-panel">
+          <p class="eyebrow">GitHub setup</p>
+          <h1>Create your class hub</h1>
+          <form id="setupForm" class="stack">
+            <label>
+              App name
+              <input id="setupHubName" autocomplete="organization" placeholder="Your class name" required />
+            </label>
+            <label>
+              Shared class password
+              <input id="setupPassword" type="password" autocomplete="new-password" required />
+            </label>
+            <div class="form-grid two">
+              <label>
+                GitHub owner
+                <input id="setupOwner" autocomplete="username" placeholder="username or org" required />
+              </label>
+              <label>
+                Repository
+                <input id="setupRepo" placeholder="repo-name" required />
+              </label>
+            </div>
+            <div class="form-grid two">
+              <label>
+                Branch
+                <input id="setupBranch" value="main" required />
+              </label>
+              <label>
+                Data file path
+                <input id="setupDataPath" value="resource-hub/data/resources.json" required />
+              </label>
+            </div>
+            <label>
+              GitHub token
+              <input id="setupToken" type="password" autocomplete="off" required />
+            </label>
+            <button class="primary-btn" type="submit">Save to GitHub</button>
+            <p id="setupMessage" class="form-message" role="status"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="loginScreen" class="auth-screen hidden">
+        <div class="auth-panel">
+          <p class="eyebrow">Class access</p>
+          <h1 id="loginTitle">Class Resource Hub</h1>
+          <form id="loginForm" class="stack">
+            <label>
+              Shared password
+              <input id="loginPassword" type="password" autocomplete="current-password" required />
+            </label>
+            <button class="primary-btn" type="submit">Enter hub</button>
+            <p id="loginMessage" class="form-message" role="status"></p>
+          </form>
+        </div>
+      </section>
+
+      <main id="mainApp" class="main-app hidden">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Class resources</p>
+            <h1 id="hubTitle">Class Resource Hub</h1>
+          </div>
+          <div class="top-actions">
+            <span id="syncStatus" class="sync-pill">Offline</span>
+            <button id="installAppBtn" class="ghost-btn hidden" type="button">Install app</button>
+            <button id="openUploadBtn" class="primary-btn" type="button">Add resource</button>
+            <button id="openSettingsBtn" class="ghost-btn" type="button">GitHub</button>
+            <button id="logoutBtn" class="ghost-btn" type="button">Lock</button>
+          </div>
+        </header>
+
+        <div class="workspace">
+          <aside class="sidebar">
+            <div class="panel-section">
+              <label class="search-box">
+                Search
+                <input id="searchInput" placeholder="Title, topic, uploader..." />
+              </label>
+            </div>
+
+            <div class="panel-section">
+              <div class="section-title">
+                <h2>Topics</h2>
+                <button id="clearTopicBtn" class="mini-btn" type="button">All</button>
+              </div>
+              <div id="topicList" class="topic-list"></div>
+              <form id="topicForm" class="inline-form">
+                <input id="newTopicInput" placeholder="New topic" required />
+                <button type="submit" class="mini-btn">Add</button>
+              </form>
+            </div>
+
+            <div class="panel-section">
+              <h2>Filters</h2>
+              <label>
+                Type
+                <select id="typeFilter">
+                  <option value="all">All types</option>
+                  <option value="file">Files</option>
+                  <option value="link">Links</option>
+                  <option value="prompt">Prompts</option>
+                  <option value="image">Images</option>
+                  <option value="video">Videos</option>
+                </select>
+              </label>
+              <label>
+                Uploaded by
+                <input id="uploaderFilter" placeholder="Any student" />
+              </label>
+              <label>
+                Sort
+                <select id="sortFilter">
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                  <option value="comments">Most commented</option>
+                </select>
+              </label>
+              <label class="checkbox-line">
+                <input id="favoritesOnly" type="checkbox" />
+                Favorites only
+              </label>
+            </div>
+          </aside>
+
+          <section class="content">
+            <div class="content-head">
+              <div>
+                <h2 id="resultTitle">All resources</h2>
+                <p id="resultCount" class="muted">0 items</p>
+              </div>
+              <button id="refreshBtn" class="ghost-btn" type="button">Refresh</button>
+            </div>
+            <div id="resourceGrid" class="resource-grid"></div>
+            <div id="emptyState" class="empty-state hidden">
+              <h2>No resources yet</h2>
+              <p>Add files, links, prompts, images, or videos for the class.</p>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <dialog id="uploadDialog" class="dialog">
+        <form id="resourceForm" class="dialog-card">
+          <div class="dialog-head">
+            <div>
+              <p class="eyebrow">Share</p>
+              <h2>Add resource</h2>
+            </div>
+            <button class="icon-btn" type="button" data-close-dialog="uploadDialog">x</button>
+          </div>
+
+          <div class="form-grid two">
+            <label>
+              Title
+              <input id="resourceTitle" required />
+            </label>
+            <label>
+              Uploaded by
+              <input id="resourceUploader" required />
+            </label>
+          </div>
+
+          <div class="form-grid two">
+            <label>
+              Topic/unit
+              <select id="resourceTopic" required></select>
+            </label>
+            <label>
+              Type
+              <select id="resourceType" required>
+                <option value="file">File</option>
+                <option value="link">Link</option>
+                <option value="prompt">Prompt</option>
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Description
+            <textarea id="resourceDescription" rows="3" required></textarea>
+          </label>
+
+          <label id="urlField" class="dynamic-field hidden">
+            Link URL
+            <input id="resourceUrl" type="url" placeholder="https://..." />
+          </label>
+
+          <label id="promptField" class="dynamic-field hidden">
+            Prompt text
+            <textarea id="resourcePrompt" rows="5"></textarea>
+          </label>
+
+          <label id="fileField" class="dynamic-field">
+            Upload file
+            <input id="resourceFile" type="file" />
+          </label>
+
+          <div class="dialog-actions">
+            <button class="ghost-btn" type="button" data-close-dialog="uploadDialog">Cancel</button>
+            <button class="primary-btn" type="submit">Upload to GitHub</button>
+          </div>
+          <p id="resourceMessage" class="form-message" role="status"></p>
+        </form>
+      </dialog>
+
+      <dialog id="settingsDialog" class="dialog">
+        <form id="settingsForm" class="dialog-card">
+          <div class="dialog-head">
+            <div>
+              <p class="eyebrow">Storage</p>
+              <h2>GitHub connection</h2>
+            </div>
+            <button class="icon-btn" type="button" data-close-dialog="settingsDialog">x</button>
+          </div>
+          <div class="form-grid two">
+            <label>
+              Owner
+              <input id="settingsOwner" required />
+            </label>
+            <label>
+              Repository
+              <input id="settingsRepo" required />
+            </label>
+          </div>
+          <div class="form-grid two">
+            <label>
+              Branch
+              <input id="settingsBranch" required />
+            </label>
+            <label>
+              Data file path
+              <input id="settingsDataPath" required />
+            </label>
+          </div>
+          <label>
+            GitHub token
+            <input id="settingsToken" type="password" autocomplete="off" />
+          </label>
+          <div class="dialog-actions">
+            <button class="ghost-btn" type="button" data-close-dialog="settingsDialog">Cancel</button>
+            <button class="primary-btn" type="submit">Save connection</button>
+          </div>
+          <p id="settingsMessage" class="form-message" role="status"></p>
+        </form>
+      </dialog>
+    </div>
+
+    <template id="resourceCardTemplate">
+      <article class="resource-card">
+        <div class="card-top">
+          <span class="type-badge"></span>
+          <button class="favorite-btn" type="button" title="Favorite">Save</button>
+        </div>
+        <h3></h3>
+        <p class="description"></p>
+        <div class="meta-row"></div>
+        <div class="resource-preview"></div>
+        <div class="resource-actions"></div>
+        <section class="comments">
+          <div class="comments-head">
+            <h4>Comments</h4>
+            <span class="comment-count"></span>
+          </div>
+          <div class="comment-list"></div>
+          <form class="comment-form">
+            <input name="name" placeholder="Name" required />
+            <input name="text" placeholder="Comment" required />
+            <button class="mini-btn" type="submit">Post</button>
+          </form>
+        </section>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
