@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Class Resource Hub</title>
+  <desc id="desc">A blue and white app icon with a book and shared resource nodes.</desc>
+  <rect width="512" height="512" rx="96" fill="#185abc"/>
+  <path d="M126 132h134c39 0 70 31 70 70v178H196c-39 0-70-31-70-70V132z" fill="#ffffff"/>
+  <path d="M186 132h134c39 0 70 31 70 70v178H256c-39 0-70-31-70-70V132z" fill="#eaf2ff"/>
+  <path d="M186 132v178c0 39 31 70 70 70" fill="none" stroke="#0f2f6b" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="178" cy="202" r="24" fill="#0f2f6b"/>
+  <circle cx="256" cy="256" r="24" fill="#0f2f6b"/>
+  <circle cx="334" cy="202" r="24" fill="#0f2f6b"/>
+  <path d="M200 210l34 24m44 0l34-24" fill="none" stroke="#0f2f6b" stroke-width="16" stroke-linecap="round"/>
+</svg>
