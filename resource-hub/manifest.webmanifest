@@ -1,0 +1,33 @@
+{
+  "name": "Class Resource Hub",
+  "short_name": "Resource Hub",
+  "description": "A GitHub-only class resource hub for files, links, prompts, images, videos, downloads, and comments.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#185abc",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Resource Hub",
+      "short_name": "Hub",
+      "url": "./",
+      "icons": [
+        {
+          "src": "./icons/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
